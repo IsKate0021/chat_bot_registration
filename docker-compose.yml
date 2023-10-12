@@ -1,0 +1,27 @@
+version: '3'
+services:
+  mysql_registration:
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 
+      MYSQL_DATABASE: MyDB
+      MYSQL_USER: Kate
+      MYSQL_PASSWORD: 
+      LANG: C.UTF-8
+    ports:
+      - '3306:3306'
+    volumes:
+      - ./credentials.sql:/docker-entrypoint-initdb.d/credentials.sql
+
+  python_registration:
+    image: python:alpine
+    volumes:
+      - ./share:/code
+    depends_on:
+      - mysql_registration
+    command: sh -c "apk add --no-cache bash && 
+                    pip3 install -r ./code/requirements.txt &&
+                    tail -f /dev/null"
+
+                    
